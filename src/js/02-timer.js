@@ -1,16 +1,18 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import { Report } from 'notiflix/build/notiflix-report-aio';
 const flatpickr = require("flatpickr");
 const input = document.querySelector("#datetime-picker");
 
 const button = document.querySelector('button[data-start]');
 button.setAttribute('disabled', true);
 
-let day = document.querySelector('span[data-days]');
-let hour = document.querySelector('span[data-hours]');
-let minut = document.querySelector('span[data-minutes]');
-let second = document.querySelector('span[data-seconds]')
-
+const refs = {
+day: document.querySelector('span[data-days]'),
+hour: document.querySelector('span[data-hours]'),
+minut: document.querySelector('span[data-minutes]'),
+second: document.querySelector('span[data-seconds]'),
+}
 
 const options = {
     enableTime: true,
@@ -29,11 +31,17 @@ function countdown() {
         const countTime = selectedDates[0] - currentTime;
         const {days, hours, minutes, seconds} = convertMs(countTime);
         updateCounter();
+        function updateCounter() {
+            refs.day.textContent = days;
+            refs.hour.textContent = hours;
+            refs.minut.textContent = minutes;
+            refs.second.textContent = seconds;
+        };
         console.log(`${days}: ${hours}: ${minutes}: ${seconds}`);
     }, 1000)
 }
         } else {
-            alert("Please choose a date in the future");
+            Report.failure("Please choose a date in the future");
         }
     },
 };
@@ -60,11 +68,4 @@ function convertMs(ms) {
     const seconds = addLeadingZero(Math.floor((((ms % day) % hour) % minute) / second));
     
     return { days, hours, minutes, seconds };
-}
-
-function updateCounter({days, hours, minutes, seconds}) {
-// days = day.textContent;
-// hour.textContent = `${hours}`
-// minut.textContent = `${minutes}`
-    // second.textContent = `${seconds}`
 }
